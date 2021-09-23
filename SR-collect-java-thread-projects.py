@@ -33,8 +33,6 @@ def filter_for_thread_projects(projects):
         #shutil.rmtree('tmp')
     return thread_projects
 
-
-
 def main(args):
    # projects = ['']
     file_list =open('/media/shanto/Education/Research/idoft/project-list','r')# grep ,NOD, pr-data.csv | cut -d , -f1 | sort -u
@@ -44,10 +42,6 @@ def main(args):
     file1.writelines(output)
     file1.close()
     print(output)
-
-
-
-
 
 if __name__ == '__main__':
     main(sys.argv)
