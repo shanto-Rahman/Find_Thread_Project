@@ -32,14 +32,14 @@ def main(args):
     thread_project_list = []
     with open(args) as f1: 
         for line in f1:       
-            url =line.strip()# grep ,NOD, pr-data.csv | cut -d , -f1 | sort -u
+            url =line.strip()
             output = filter_for_thread_projects(url)
             thread_project_list.append(output)
         with open('output.txt','w') as f2:
             f2.write(str(thread_project_list)) 
         print("Total Number of Thread Projects = ", COUNT) 
 
-
+# grep ,NOD, pr-data.csv | cut -d , -f1 | sort -u
 if __name__ == '__main__':
     main(sys.argv[1])
 
