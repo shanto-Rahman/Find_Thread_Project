@@ -6,43 +6,40 @@ import subprocess
 import sys
 
 from find import find_file
+COUNT = 0
 # From list of projects, filter for ones that use Thread
-def filter_for_thread_projects(projects):
+def filter_for_thread_projects(project_url):
     thread_projects = []
-    flag=0
-    for project_url in projects:
-        project=project_url.split('/')[-1] 
-       # print(project)
-        command = 'git clone ' + project_url + project + ' --depth=1'
-        subprocess.call(command.split())
-        project = project.rstrip()
-        grep_command = ['grep',  '-r' 'new Thread(', project]
-        try:
-             output = subprocess.check_output(grep_command)
-             print("GOT MATCH")
-             flag+=1
-             print(flag) 
-             thread_projects.append(project)
-             thread_projects.append("\n")
-        except subprocess.CalledProcessError as grepexc: 
-             print( "NO MATCH error code", grepexc.returncode, grepexc.output) 
-             shutil.rmtree(project)
-#       if not output == '':
-           #print("GOT MATCH")  
-           #thread_projects.append(project)
-        #shutil.rmtree('tmp')
+    project_url=project_url.split('\n')[0]
+    project=project_url.split('/')[-1] 
+    command = 'git clone ' + project_url + ' '+ project + ' --depth=1'
+    subprocess.call(command.split())
+    project = project.rstrip()
+    grep_command = ['grep',  '-r' 'new Thread(', project]
+    try:
+        output = subprocess.check_output(grep_command)
+        print("GOT MATCH")
+        global COUNT
+        COUNT += 1
+        print(COUNT) 
+        thread_projects.append(project)
+    except subprocess.CalledProcessError as grepexc: 
+        print( "NO MATCH error code", grepexc.returncode, grepexc.output) 
+        shutil.rmtree(project)
     return thread_projects
 
 def main(args):
-   # projects = ['']
-    file_list =open('/media/shanto/Education/Research/idoft/project-list','r')# grep ,NOD, pr-data.csv | cut -d , -f1 | sort -u
-   # print(file_list)
-    output = filter_for_thread_projects(file_list)
-    file1 = open("output_file.txt","w")
-    file1.writelines(output)
-    file1.close()
-    print(output)
+    thread_project_list = []
+    with open(args) as f1: 
+        for line in f1:       
+            url =line.strip()# grep ,NOD, pr-data.csv | cut -d , -f1 | sort -u
+            output = filter_for_thread_projects(url)
+            thread_project_list.append(output)
+        with open('output.txt','w') as f2:
+            f2.write(str(thread_project_list)) 
+        print("Total Number of Thread Projects = ", COUNT) 
+
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main(sys.argv[1])
 
